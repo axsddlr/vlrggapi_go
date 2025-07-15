@@ -15,6 +15,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 
 	"vlrggapi/internal/router"
 
@@ -30,6 +31,13 @@ func main() {
 		AppName:      "vlrggapi",
 		ServerHeader: "vlrggapi",
 	})
+
+	// Enable CORS for all origins and methods
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
+		AllowHeaders: "*",
+		AllowMethods: "*",
+	}))
 
 	app.Use(logger.New())
 
