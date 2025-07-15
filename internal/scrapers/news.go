@@ -10,15 +10,16 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-/*
-@Summary      Get latest Valorant news
-@Description  Returns a list of recent Valorant news articles
-@Tags         news
-@Produce      json
-@Success      200  {object}  map[string]interface{}
-@Failure      500  {object}  map[string]string
-@Router       /vlr/news [get]
-*/
+//
+// VlrNews godoc
+// @Summary      Get latest Valorant news
+// @Description  Returns a list of recent Valorant news articles
+// @Tags         news
+// @Produce      json
+// @Success      200  {object}  map[string]interface{}
+// @Failure      500  {object}  map[string]string
+// @Router       /vlr/news [get]
+//
 func VlrNews(c *fiber.Ctx) error {
 	url := "https://www.vlr.gg/news"
 	req, _ := http.NewRequest("GET", url, nil)

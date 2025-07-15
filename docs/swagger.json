@@ -117,6 +117,36 @@
                 }
             }
         },
+        "/vlr/news": {
+            "get": {
+                "description": "Returns a list of recent Valorant news articles",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "news"
+                ],
+                "summary": "Get latest Valorant news",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/vlr/rankings": {
             "get": {
                 "description": "Returns team rankings for a given region",

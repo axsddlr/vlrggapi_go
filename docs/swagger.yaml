@@ -79,6 +79,26 @@ paths:
       summary: Get recent Valorant match results
       tags:
       - matches
+  /vlr/news:
+    get:
+      description: Returns a list of recent Valorant news articles
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get latest Valorant news
+      tags:
+      - news
   /vlr/rankings:
     get:
       description: Returns team rankings for a given region
