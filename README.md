@@ -28,8 +28,9 @@ vlrggapi is an open-source REST API written in Go (Golang) that scrapes and serv
 
 - Go 1.24+ installed ([download here](https://go.dev/dl/))
 - Git
+- (Optional) [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/)
 
-### Clone and Build
+### Clone and Build (Native Go)
 
 ```bash
 git clone https://github.com/yourusername/vlrggapi.git
@@ -38,13 +39,32 @@ go mod tidy
 go build -o vlrggapi ./cmd
 ```
 
-### Run
+### Run (Native Go)
 
 ```bash
 go run cmd/main.go
 ```
 
 The server will start on `http://localhost:3001` by default.
+
+---
+
+### Run with Docker
+
+Build and run the container:
+
+```bash
+docker build -t vlrggapi .
+docker run -p 3001:3001 --name vlrggapi --rm vlrggapi
+```
+
+Or use Docker Compose:
+
+```bash
+docker-compose up --build
+```
+
+The API will be available at [http://localhost:3001](http://localhost:3001).
 
 ---
 

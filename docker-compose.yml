@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  vlrggapi:
+    build: .
+    container_name: vlrggapi
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+    restart: unless-stopped
