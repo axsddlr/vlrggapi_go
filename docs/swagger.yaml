@@ -1,0 +1,152 @@
+basePath: /
+host: localhost:3001
+info:
+  contact:
+    name: vlrggapi Maintainers
+    url: https://github.com/yourusername/vlrggapi
+  description: REST API for scraping Valorant esports data from vlr.gg
+  license:
+    name: MIT
+  title: vlrggapi
+  version: "1.0"
+paths:
+  /vlr/health:
+    get:
+      description: Returns health status of the API and upstream sources
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Health check
+      tags:
+      - health
+  /vlr/match:
+    get:
+      description: Returns recent match results with detailed info
+      parameters:
+      - default: 1
+        description: Number of pages to fetch
+        in: query
+        name: num_pages
+        type: integer
+      - description: Start page
+        in: query
+        name: from_page
+        type: integer
+      - description: End page
+        in: query
+        name: to_page
+        type: integer
+      - default: 3
+        description: Retry attempts per page
+        in: query
+        name: max_retries
+        type: integer
+      - default: 1
+        description: Delay between requests (seconds)
+        in: query
+        name: request_delay
+        type: number
+      - default: 30
+        description: HTTP timeout (seconds)
+        in: query
+        name: timeout
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get recent Valorant match results
+      tags:
+      - matches
+  /vlr/rankings:
+    get:
+      description: Returns team rankings for a given region
+      parameters:
+      - description: Region key (e.g. na, eu, ap, la, oce, kr, mn, gc, br, cn, jp,
+          col)
+        in: query
+        name: region
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get Valorant team rankings
+      tags:
+      - rankings
+  /vlr/stats:
+    get:
+      description: Returns player statistics, filterable by region and timespan
+      parameters:
+      - description: Region key (e.g. na, eu, ap, la, oce, kr, mn, gc, br, cn, jp,
+          col)
+        in: query
+        name: region
+        required: true
+        type: string
+      - description: Timespan (e.g. all, 30 for 30 days)
+        in: query
+        name: timespan
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get Valorant player statistics
+      tags:
+      - stats
+swagger: "2.0"

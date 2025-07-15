@@ -7,6 +7,15 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+//
+// Health godoc
+// @Summary      Health check
+// @Description  Returns health status of the API and upstream sources
+// @Tags         health
+// @Produce      json
+// @Success      200  {object}  map[string]interface{}
+// @Router       /vlr/health [get]
+//
 func Health(c *fiber.Ctx) error {
 	sites := []string{"https://vlrggapi.vercel.app", "https://vlr.gg"}
 	results := make(map[string]map[string]interface{})

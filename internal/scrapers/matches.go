@@ -18,6 +18,23 @@ func pow(a float64, b int) float64 {
 	return math.Pow(a, float64(b))
 }
 
+//
+// VlrMatchResults godoc
+// @Summary      Get recent Valorant match results
+// @Description  Returns recent match results with detailed info
+// @Tags         matches
+// @Produce      json
+// @Param        num_pages     query     int     false  "Number of pages to fetch"  default(1)
+// @Param        from_page     query     int     false  "Start page"
+// @Param        to_page       query     int     false  "End page"
+// @Param        max_retries   query     int     false  "Retry attempts per page"    default(3)
+// @Param        request_delay query     number  false  "Delay between requests (seconds)" default(1.0)
+// @Param        timeout       query     int     false  "HTTP timeout (seconds)"     default(30)
+// @Success      200  {object}  map[string]interface{}
+// @Failure      400  {object}  map[string]string
+// @Failure      500  {object}  map[string]string
+// @Router       /vlr/match [get]
+//
 func VlrMatchResults(c *fiber.Ctx) error {
 	numPages, _ := strconv.Atoi(c.Query("num_pages", "1"))
 	fromPageStr := c.Query("from_page")

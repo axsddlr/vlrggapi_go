@@ -10,6 +10,18 @@ import (
 	"vlrggapi/internal/utils"
 )
 
+//
+// VlrRankings godoc
+// @Summary      Get Valorant team rankings
+// @Description  Returns team rankings for a given region
+// @Tags         rankings
+// @Produce      json
+// @Param        region  query     string  true   "Region key (e.g. na, eu, ap, la, oce, kr, mn, gc, br, cn, jp, col)"
+// @Success      200  {object}  map[string]interface{}
+// @Failure      400  {object}  map[string]string
+// @Failure      500  {object}  map[string]string
+// @Router       /vlr/rankings [get]
+//
 func VlrRankings(c *fiber.Ctx) error {
 	regionKey := c.Query("region")
 	regionMap := utils.Region

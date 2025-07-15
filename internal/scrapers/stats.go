@@ -10,6 +10,19 @@ import (
 	"vlrggapi/internal/utils"
 )
 
+//
+// VlrStats godoc
+// @Summary      Get Valorant player statistics
+// @Description  Returns player statistics, filterable by region and timespan
+// @Tags         stats
+// @Produce      json
+// @Param        region    query     string  true   "Region key (e.g. na, eu, ap, la, oce, kr, mn, gc, br, cn, jp, col)"
+// @Param        timespan  query     string  false  "Timespan (e.g. all, 30 for 30 days)"
+// @Success      200  {object}  map[string]interface{}
+// @Failure      400  {object}  map[string]string
+// @Failure      500  {object}  map[string]string
+// @Router       /vlr/stats [get]
+//
 func VlrStats(c *fiber.Ctx) error {
 	region := c.Query("region")
 	timespan := c.Query("timespan")
