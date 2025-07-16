@@ -153,7 +153,7 @@ Once running, you can access the API endpoints using any HTTP client (browser, c
 
 ## Project Structure
 
-```
+```markdown
 vlrggapi/
 ├── cmd/
 │   └── main.go           # Application entrypoint
