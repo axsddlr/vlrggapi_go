@@ -8,6 +8,7 @@ vlrggapi is an open-source REST API written in Go (Golang) that scrapes and serv
 - **/vlr/stats**: Retrieve player statistics, filterable by region and timespan.
 - **/vlr/rankings**: Get team rankings for different regions.
 - **/vlr/match**: Fetch recent match results with detailed info.
+- **/vlr/live**: Get live match scores and details.
 - **/vlr/health**: Health check for the API and upstream sources.
 
 ## Table of Contents
@@ -68,6 +69,12 @@ The API will be available at [http://localhost:3001](http://localhost:3001).
 
 ---
 
+## API Documentation
+
+Interactive Swagger UI is available at [http://localhost:3001/swagger/index.html](http://localhost:3001/swagger/index.html) after running the server.
+
+---
+
 ## Usage
 
 Once running, you can access the API endpoints using any HTTP client (browser, curl, Postman, etc).
@@ -125,6 +132,41 @@ Once running, you can access the API endpoints using any HTTP client (browser, c
   - `request_delay` (optional): Delay between requests in seconds (default: 1.0)
   - `timeout` (optional): HTTP timeout in seconds (default: 30)
 
+### `/vlr/live`
+
+- **GET**: Returns live match scores and details.
+- **Response Example:**
+  ```json
+  {
+    "data": {
+      "status": 200,
+      "segments": [
+        {
+          "team1": "Team A",
+          "team2": "Team B",
+          "flag1": "flag_us",
+          "flag2": "flag_br",
+          "team1_logo": "https://...",
+          "team2_logo": "https://...",
+          "score1": "7",
+          "score2": "13",
+          "team1_round_ct": "3",
+          "team1_round_t": "4",
+          "team2_round_ct": "7",
+          "team2_round_t": "6",
+          "map_number": "1",
+          "current_map": "Bind",
+          "time_until_match": "LIVE",
+          "match_event": "VCT 2025: Pacific Stage 2",
+          "match_series": "Group Stage: Week 1",
+          "unix_timestamp": "2025-07-15 04:00:00",
+          "match_page": "https://www.vlr.gg/..."
+        }
+      ]
+    }
+  }
+  ```
+
 ### `/vlr/health`
 
 - **GET**: Returns health status of the API and upstream sources.
@@ -148,14 +190,17 @@ vlrggapi/
 │   │   └── vlr_router.go # Route registration
 │   ├── scrapers/
 │   │   ├── news.go       # News scraping logic
-│   │   ├── matches.go    # Match results scraping
+│   │   ├── matches.go    # Match results, live scores scraping
 │   │   ├── rankings.go   # Rankings scraping
 │   │   ├── stats.go      # Stats scraping
 │   │   └── health.go     # Health check
 │   └── utils/
 │       └── utils.go      # Shared headers, region map, etc.
+├── docs/                 # Swagger/OpenAPI generated docs
 ├── go.mod
 ├── go.sum
+├── Dockerfile
+├── docker-compose.yml
 └── README.md
 ```
 
