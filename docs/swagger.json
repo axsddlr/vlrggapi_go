@@ -15,6 +15,50 @@
     "host": "localhost:3001",
     "basePath": "/",
     "paths": {
+        "/vlr/events": {
+            "get": {
+                "description": "Returns a list of upcoming or completed Valorant events",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "events"
+                ],
+                "summary": "Get Valorant events",
+                "parameters": [
+                    {
+                        "type": "boolean",
+                        "description": "If true, return only upcoming events",
+                        "name": "upcoming",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "If true, return only completed events",
+                        "name": "completed",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/vlr/health": {
             "get": {
                 "description": "Returns health status of the API and upstream sources",

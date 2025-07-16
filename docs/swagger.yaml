@@ -10,6 +10,35 @@ info:
   title: vlrggapi
   version: "1.0"
 paths:
+  /vlr/events:
+    get:
+      description: Returns a list of upcoming or completed Valorant events
+      parameters:
+      - description: If true, return only upcoming events
+        in: query
+        name: upcoming
+        type: boolean
+      - description: If true, return only completed events
+        in: query
+        name: completed
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get Valorant events
+      tags:
+      - events
   /vlr/health:
     get:
       description: Returns health status of the API and upstream sources
