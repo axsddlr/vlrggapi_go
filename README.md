@@ -16,6 +16,7 @@ vlrggapi is an open-source REST API written in Go (Golang) that scrapes and serv
 
 - **Structured Logging:** Uses [zap](https://github.com/uber-go/zap) for structured, production-grade logging.
 - **In-memory Caching:** GET requests are cached in-memory for 30 seconds to reduce load and improve response times. Cache is per-endpoint+query.
+- **Extensible Scraper Registry:** New scrapers can be added by implementing the `Scraper` interface and registering with `RegisterScraper`, making it easy to add new endpoints or data sources.
 
 ## Table of Contents
 
