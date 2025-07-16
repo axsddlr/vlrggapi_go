@@ -99,9 +99,11 @@ Once running, you can access the API endpoints using any HTTP client (browser, c
 ## API Endpoints
 
 ### `/vlr/news`
+
 - **GET**: Returns a list of recent Valorant news articles.
 
 ### `/vlr/stats`
+
 - **GET**: Returns player statistics.
 - **Query Parameters:**
   - `region` (required): e.g. `na`, `eu`, `ap`, etc.
@@ -109,12 +111,14 @@ Once running, you can access the API endpoints using any HTTP client (browser, c
 - **Example:** `/vlr/stats?region=na&timespan=30`
 
 ### `/vlr/rankings`
+
 - **GET**: Returns team rankings for a region.
 - **Query Parameters:**
   - `region` (required): e.g. `na`, `eu`, `ap`, etc.
 - **Example:** `/vlr/rankings?region=eu`
 
 ### `/vlr/match`
+
 - **GET**: Returns recent match results.
 - **Query Parameters:**
   - `num_pages` (optional): Number of pages to fetch (default: 1)
@@ -124,9 +128,11 @@ Once running, you can access the API endpoints using any HTTP client (browser, c
   - `timeout` (optional): HTTP timeout in seconds (default: 30)
 
 ### `/vlr/live`
+
 - **GET**: Returns live match scores and details.
 
 ### `/vlr/events`
+
 - **GET**: Returns Valorant events.
 - **Query Parameters:**
   - `upcoming` (optional): Show only upcoming events (e.g. `/vlr/events?upcoming` or `/vlr/events?upcoming=true`)
@@ -134,6 +140,7 @@ Once running, you can access the API endpoints using any HTTP client (browser, c
   - If neither is set, both are shown.
 
 ### `/vlr/health`
+
 - **GET**: Returns health status of the API and upstream sources.
 
 ---
@@ -154,11 +161,13 @@ vlrggapi/
 │   ├── router/
 │   │   └── vlr_router.go # Route registration
 │   ├── scrapers/
-│   │   ├── news.go       # News scraping logic
-│   │   ├── matches.go    # Match results, live scores scraping
-│   │   ├── rankings.go   # Rankings scraping
-│   │   ├── stats.go      # Stats scraping
-│   │   └── health.go     # Health check
+│   │   ├── news.go       # News scraping logic (/vlr/news)
+│   │   ├── matches.go    # Match results & live scores (/vlr/match, /vlr/live)
+│   │   ├── rankings.go   # Rankings scraping (/vlr/rankings)
+│   │   ├── stats.go      # Stats scraping (/vlr/stats)
+│   │   ├── events.go     # Events scraping (/vlr/events)
+│   │   ├── health.go     # Health check (/vlr/health)
+│   │   └── scraper.go    # Scraper interface & registry for extensibility
 │   └── utils/
 │       └── utils.go      # Shared headers, region map, etc.
 ├── docs/                 # Swagger/OpenAPI generated docs
