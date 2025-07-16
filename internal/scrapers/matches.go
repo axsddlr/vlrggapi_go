@@ -160,6 +160,17 @@ func VlrLiveScore(c *fiber.Ctx) error {
 		}
 	})
 
+	// If no live matches, add a message
+	if len(result) == 0 {
+		return c.JSON(fiber.Map{
+			"data": fiber.Map{
+				"status": 200,
+				"segments": []interface{}{},
+				"message": "No live matches at this time.",
+			},
+		})
+	}
+
 	return c.JSON(fiber.Map{"data": fiber.Map{"status": 200, "segments": result}})
 }
 
