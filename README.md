@@ -9,6 +9,7 @@ vlrggapi is an open-source REST API written in Go (Golang) that scrapes and serv
 - **/vlr/rankings**: Get team rankings for different regions.
 - **/vlr/match**: Fetch recent match results with detailed info.
 - **/vlr/live**: Get live match scores and details.
+- **/vlr/events**: Get upcoming and completed Valorant events (with `upcoming` and `completed` query params).
 - **/vlr/health**: Health check for the API and upstream sources.
 
 ### Improvements
@@ -97,28 +98,9 @@ Once running, you can access the API endpoints using any HTTP client (browser, c
 ## API Endpoints
 
 ### `/vlr/news`
-
 - **GET**: Returns a list of recent Valorant news articles.
-- **Response Example:**
-  ```json
-  {
-    "data": {
-      "status": 200,
-      "segments": [
-        {
-          "title": "FUT announces return of cNed, arrival of Johnta",
-          "description": "The former world champion is back after a short break.",
-          "date": "July 14, 2025",
-          "author": "jenopelle",
-          "url_path": "https://vlr.gg/516910/fut-announces-return-of-cned-arrival-of-johnta"
-        }
-      ]
-    }
-  }
-  ```
 
 ### `/vlr/stats`
-
 - **GET**: Returns player statistics.
 - **Query Parameters:**
   - `region` (required): e.g. `na`, `eu`, `ap`, etc.
@@ -126,14 +108,12 @@ Once running, you can access the API endpoints using any HTTP client (browser, c
 - **Example:** `/vlr/stats?region=na&timespan=30`
 
 ### `/vlr/rankings`
-
 - **GET**: Returns team rankings for a region.
 - **Query Parameters:**
   - `region` (required): e.g. `na`, `eu`, `ap`, etc.
 - **Example:** `/vlr/rankings?region=eu`
 
 ### `/vlr/match`
-
 - **GET**: Returns recent match results.
 - **Query Parameters:**
   - `num_pages` (optional): Number of pages to fetch (default: 1)
@@ -143,42 +123,16 @@ Once running, you can access the API endpoints using any HTTP client (browser, c
   - `timeout` (optional): HTTP timeout in seconds (default: 30)
 
 ### `/vlr/live`
-
 - **GET**: Returns live match scores and details.
-- **Response Example:**
-  ```json
-  {
-    "data": {
-      "status": 200,
-      "segments": [
-        {
-          "team1": "Team A",
-          "team2": "Team B",
-          "flag1": "flag_us",
-          "flag2": "flag_br",
-          "team1_logo": "https://...",
-          "team2_logo": "https://...",
-          "score1": "7",
-          "score2": "13",
-          "team1_round_ct": "3",
-          "team1_round_t": "4",
-          "team2_round_ct": "7",
-          "team2_round_t": "6",
-          "map_number": "1",
-          "current_map": "Bind",
-          "time_until_match": "LIVE",
-          "match_event": "VCT 2025: Pacific Stage 2",
-          "match_series": "Group Stage: Week 1",
-          "unix_timestamp": "2025-07-15 04:00:00",
-          "match_page": "https://www.vlr.gg/..."
-        }
-      ]
-    }
-  }
-  ```
+
+### `/vlr/events`
+- **GET**: Returns Valorant events.
+- **Query Parameters:**
+  - `upcoming` (optional): Show only upcoming events (e.g. `/vlr/events?upcoming` or `/vlr/events?upcoming=true`)
+  - `completed` (optional): Show only completed events (e.g. `/vlr/events?completed` or `/vlr/events?completed=true`)
+  - If neither is set, both are shown.
 
 ### `/vlr/health`
-
 - **GET**: Returns health status of the API and upstream sources.
 
 ---
