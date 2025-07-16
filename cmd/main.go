@@ -11,6 +11,7 @@ package main
 import (
 	"log"
 	"os"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
@@ -24,9 +25,15 @@ import (
 	_ "vlrggapi/docs"
 
 	"github.com/gofiber/swagger"
+	"go.uber.org/zap"
+	"sync"
 )
 
 func main() {
+	// Initialize zap logger
+	loggerZap, _ := zap.NewProduction()
+	defer loggerZap.Sync()
+
 	app := fiber.New(fiber.Config{
 		AppName:      "vlrggapi",
 		ServerHeader: "vlrggapi",
@@ -39,6 +46,7 @@ func main() {
 		AllowMethods: "*",
 	}))
 
+	// Fiber logger middleware (console)
 	app.Use(logger.New())
 
 	// Global rate limiting (600 requests/minute per IP)
@@ -46,6 +54,46 @@ func main() {
 		Max:        600,
 		Expiration: 60 * 1000 * 1000 * 1000, // 1 minute in nanoseconds
 	}))
+
+	// Simple in-memory cache for GET requests (per endpoint+query)
+	type cacheEntry struct {
+		data      []byte
+		timestamp time.Time
+	}
+	var (
+		cache      = make(map[string]cacheEntry)
+		cacheMutex sync.RWMutex
+		cacheTTL   = 30 * time.Second // cache duration
+	)
+	app.Use(func(c *fiber.Ctx) error {
+		if c.Method() != fiber.MethodGet {
+			return c.Next()
+		}
+		key := c.OriginalURL()
+		cacheMutex.RLock()
+		entry, found := cache[key]
+		cacheMutex.RUnlock()
+		if found && time.Since(entry.timestamp) < cacheTTL {
+			c.Response().Header.Set("X-Cache", "HIT")
+			return c.Send(entry.data)
+		}
+		// Capture response
+		err := c.Next()
+		if err != nil {
+			loggerZap.Error("handler error", zap.String("url", key), zap.Error(err))
+			return err
+		}
+		if c.Response().StatusCode() == fiber.StatusOK {
+			cacheMutex.Lock()
+			cache[key] = cacheEntry{
+				data:      c.Response().Body(),
+				timestamp: time.Now(),
+			}
+			cacheMutex.Unlock()
+			c.Response().Header.Set("X-Cache", "MISS")
+		}
+		return nil
+	})
 
 	// Register VLR router
 	router.RegisterVlrRoutes(app)
@@ -67,5 +115,6 @@ func main() {
 	if port == "" {
 		port = "3001"
 	}
+	loggerZap.Info("Starting server", zap.String("port", port))
 	log.Fatal(app.Listen("0.0.0.0:" + port))
 }

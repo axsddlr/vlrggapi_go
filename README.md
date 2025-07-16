@@ -11,6 +11,11 @@ vlrggapi is an open-source REST API written in Go (Golang) that scrapes and serv
 - **/vlr/live**: Get live match scores and details.
 - **/vlr/health**: Health check for the API and upstream sources.
 
+### Improvements
+
+- **Structured Logging:** Uses [zap](https://github.com/uber-go/zap) for structured, production-grade logging.
+- **In-memory Caching:** GET requests are cached in-memory for 30 seconds to reduce load and improve response times. Cache is per-endpoint+query.
+
 ## Table of Contents
 
 - [Installation](#installation)
@@ -68,6 +73,11 @@ docker-compose up --build
 The API will be available at [http://localhost:3001](http://localhost:3001).
 
 ---
+
+### Notes on Performance & Logging
+
+- All GET endpoints are cached in-memory for 30 seconds by default. You can adjust the cache TTL in `cmd/main.go`.
+- All errors and important events are logged using zap for easier debugging and monitoring.
 
 ## API Documentation
 
