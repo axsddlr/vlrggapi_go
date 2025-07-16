@@ -24,6 +24,26 @@ paths:
       summary: Health check
       tags:
       - health
+  /vlr/live:
+    get:
+      description: Returns live match scores from VLR.GG
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get live Valorant match scores
+      tags:
+      - matches
   /vlr/match:
     get:
       description: Returns recent match results with detailed info

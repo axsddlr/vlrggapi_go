@@ -12,5 +12,6 @@ func RegisterVlrRoutes(app *fiber.App) {
 	vlr.Get("/stats", scrapers.VlrStats)
 	vlr.Get("/rankings", scrapers.VlrRankings)
 	vlr.Get("/match", scrapers.VlrMatchResults)
+	vlr.Get("/live", scrapers.VlrLiveScore)
 	vlr.Get("/health", scrapers.Health)
 }
