@@ -75,33 +75,42 @@ paths:
       - matches
   /vlr/match:
     get:
-      description: Returns recent match results with detailed info
+      description: Returns upcoming scheduled matches or recent match results, depending
+        on query params.
       parameters:
+      - description: 'If true, return upcoming/scheduled matches (default: false)'
+        in: query
+        name: schedule
+        type: boolean
+      - description: 'If true, return match results (default: true)'
+        in: query
+        name: results
+        type: boolean
       - default: 1
-        description: Number of pages to fetch
+        description: Number of pages to fetch (results only)
         in: query
         name: num_pages
         type: integer
-      - description: Start page
+      - description: Start page (results only)
         in: query
         name: from_page
         type: integer
-      - description: End page
+      - description: End page (results only)
         in: query
         name: to_page
         type: integer
       - default: 3
-        description: Retry attempts per page
+        description: Retry attempts per page (results only)
         in: query
         name: max_retries
         type: integer
       - default: 1
-        description: Delay between requests (seconds)
+        description: Delay between requests (seconds, results only)
         in: query
         name: request_delay
         type: number
       - default: 30
-        description: HTTP timeout (seconds)
+        description: HTTP timeout (seconds, results only)
         in: query
         name: timeout
         type: integer
@@ -125,7 +134,7 @@ paths:
             additionalProperties:
               type: string
             type: object
-      summary: Get recent Valorant match results
+      summary: Get Valorant match schedule or results
       tags:
       - matches
   /vlr/news:

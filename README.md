@@ -119,13 +119,15 @@ Once running, you can access the API endpoints using any HTTP client (browser, c
 
 ### `/vlr/match`
 
-- **GET**: Returns recent match results.
+- **GET**: Returns match results or match schedule.
 - **Query Parameters:**
-  - `num_pages` (optional): Number of pages to fetch (default: 1)
-  - `from_page`, `to_page` (optional): Page range
-  - `max_retries` (optional): Retry attempts per page (default: 3)
-  - `request_delay` (optional): Delay between requests in seconds (default: 1.0)
-  - `timeout` (optional): HTTP timeout in seconds (default: 30)
+  - `schedule` (optional): If set (e.g. `/vlr/match?schedule` or `/vlr/match?schedule=true`), returns upcoming/scheduled matches.
+  - `results` (optional): If set (e.g. `/vlr/match?results` or `/vlr/match?results=true`), returns match results (default).
+  - `num_pages` (optional, results only): Number of pages to fetch (default: 1)
+  - `from_page`, `to_page` (optional, results only): Page range
+  - `max_retries` (optional, results only): Retry attempts per page (default: 3)
+  - `request_delay` (optional, results only): Delay between requests in seconds (default: 1.0)
+  - `timeout` (optional, results only): HTTP timeout in seconds (default: 30)
 
 ### `/vlr/live`
 

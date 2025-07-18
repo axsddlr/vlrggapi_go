@@ -184,22 +184,104 @@ func VlrLiveScore(c *fiber.Ctx) error {
 
 //
 // VlrMatchResults godoc
-// @Summary      Get recent Valorant match results
-// @Description  Returns recent match results with detailed info
+// @Summary      Get Valorant match schedule or results
+// @Description  Returns upcoming scheduled matches or recent match results, depending on query params.
 // @Tags         matches
 // @Produce      json
-// @Param        num_pages     query     int     false  "Number of pages to fetch"  default(1)
-// @Param        from_page     query     int     false  "Start page"
-// @Param        to_page       query     int     false  "End page"
-// @Param        max_retries   query     int     false  "Retry attempts per page"    default(3)
-// @Param        request_delay query     number  false  "Delay between requests (seconds)" default(1.0)
-// @Param        timeout       query     int     false  "HTTP timeout (seconds)"     default(30)
+// @Param        schedule      query     bool    false  "If true, return upcoming/scheduled matches (default: false)"
+// @Param        results       query     bool    false  "If true, return match results (default: true)"
+// @Param        num_pages     query     int     false  "Number of pages to fetch (results only)"  default(1)
+// @Param        from_page     query     int     false  "Start page (results only)"
+// @Param        to_page       query     int     false  "End page (results only)"
+// @Param        max_retries   query     int     false  "Retry attempts per page (results only)"    default(3)
+// @Param        request_delay query     number  false  "Delay between requests (seconds, results only)" default(1.0)
+// @Param        timeout       query     int     false  "HTTP timeout (seconds, results only)"     default(30)
 // @Success      200  {object}  map[string]interface{}
 // @Failure      400  {object}  map[string]string
 // @Failure      500  {object}  map[string]string
 // @Router       /vlr/match [get]
 //
 func VlrMatchResults(c *fiber.Ctx) error {
+	// Determine if schedule or results
+	querySchedule := c.Query("schedule")
+	queryResults := c.Query("results")
+	isSchedule := querySchedule == "true" || querySchedule == "1" || (queryResults == "" && querySchedule != "false")
+	isResults := queryResults == "true" || queryResults == "1" || (querySchedule == "" && queryResults != "false")
+
+	// If both ?schedule and ?results are missing, default to results
+	if !isSchedule && !isResults {
+		isResults = true
+	}
+
+	if isSchedule {
+		// Scrape from /matches (schedule)
+		url := "https://www.vlr.gg/matches"
+		req, _ := http.NewRequest("GET", url, nil)
+		for k, v := range utils.Headers {
+			req.Header.Set(k, v)
+		}
+		resp, err := http.DefaultClient.Do(req)
+		if err != nil {
+			return c.Status(500).JSON(fiber.Map{"error": "Failed to fetch match schedule"})
+		}
+		defer resp.Body.Close()
+
+		doc, err := goquery.NewDocumentFromReader(resp.Body)
+		if err != nil {
+			return c.Status(500).JSON(fiber.Map{"error": "Failed to parse HTML"})
+		}
+
+		var result []map[string]interface{}
+		doc.Find("a.wf-module-item").Each(func(_ int, s *goquery.Selection) {
+			matchTime := strings.TrimSpace(s.Find("div.match-item-time").Text())
+			team1 := strings.TrimSpace(s.Find("div.match-item-vs-team:first-child .text-of").Text())
+			team2 := strings.TrimSpace(s.Find("div.match-item-vs-team:last-child .text-of").Text())
+			flag1 := s.Find("div.match-item-vs-team:first-child .flag").AttrOr("class", "")
+			flag2 := s.Find("div.match-item-vs-team:last-child .flag").AttrOr("class", "")
+			flag1 = strings.ReplaceAll(flag1, " mod-", "_")
+			flag2 = strings.ReplaceAll(flag2, " mod-", "_")
+			// Extract event: get the last non-empty line (should be event name)
+			eventRaw := s.Find("div.match-item-event").Text()
+			event := ""
+			eventLines := strings.Split(eventRaw, "\n")
+			for i := len(eventLines) - 1; i >= 0; i-- {
+				line := strings.TrimSpace(eventLines[i])
+				if line != "" {
+					event = line
+					break
+				}
+			}
+			series := strings.TrimSpace(s.Find("div.match-item-event-series").Text())
+			// status is not included in schedule output
+			etaRaw := s.Find("div.match-item-eta").Text()
+			eta := ""
+			// Improved: get the last non-empty line (should be the time, e.g. "18m")
+			etaLines := strings.Split(etaRaw, "\n")
+			for i := len(etaLines) - 1; i >= 0; i-- {
+				line := strings.TrimSpace(etaLines[i])
+				if line != "" {
+					eta = line
+					break
+				}
+			}
+			urlPath, _ := s.Attr("href")
+			result = append(result, map[string]interface{}{
+				"match_time": matchTime,
+				"team1":      team1,
+				"team2":      team2,
+				"flag1":      flag1,
+				"flag2":      flag2,
+				"event":      event,
+				"series":     series,
+				"eta":        eta,
+				"match_page": "https://www.vlr.gg" + urlPath,
+			})
+		})
+
+		return c.JSON(fiber.Map{"data": fiber.Map{"status": 200, "segments": result}})
+	}
+
+	// Default: results
 	numPages, _ := strconv.Atoi(c.Query("num_pages", "1"))
 	fromPageStr := c.Query("from_page")
 	toPageStr := c.Query("to_page")

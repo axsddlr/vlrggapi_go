@@ -112,52 +112,64 @@
         },
         "/vlr/match": {
             "get": {
-                "description": "Returns recent match results with detailed info",
+                "description": "Returns upcoming scheduled matches or recent match results, depending on query params.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "matches"
                 ],
-                "summary": "Get recent Valorant match results",
+                "summary": "Get Valorant match schedule or results",
                 "parameters": [
+                    {
+                        "type": "boolean",
+                        "description": "If true, return upcoming/scheduled matches (default: false)",
+                        "name": "schedule",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "If true, return match results (default: true)",
+                        "name": "results",
+                        "in": "query"
+                    },
                     {
                         "type": "integer",
                         "default": 1,
-                        "description": "Number of pages to fetch",
+                        "description": "Number of pages to fetch (results only)",
                         "name": "num_pages",
                         "in": "query"
                     },
                     {
                         "type": "integer",
-                        "description": "Start page",
+                        "description": "Start page (results only)",
                         "name": "from_page",
                         "in": "query"
                     },
                     {
                         "type": "integer",
-                        "description": "End page",
+                        "description": "End page (results only)",
                         "name": "to_page",
                         "in": "query"
                     },
                     {
                         "type": "integer",
                         "default": 3,
-                        "description": "Retry attempts per page",
+                        "description": "Retry attempts per page (results only)",
                         "name": "max_retries",
                         "in": "query"
                     },
                     {
                         "type": "number",
                         "default": 1,
-                        "description": "Delay between requests (seconds)",
+                        "description": "Delay between requests (seconds, results only)",
                         "name": "request_delay",
                         "in": "query"
                     },
                     {
                         "type": "integer",
                         "default": 30,
-                        "description": "HTTP timeout (seconds)",
+                        "description": "HTTP timeout (seconds, results only)",
                         "name": "timeout",
                         "in": "query"
                     }
