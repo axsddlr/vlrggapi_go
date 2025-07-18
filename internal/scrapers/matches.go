@@ -3,17 +3,17 @@ package scrapers
 import (
 	"fmt"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
-	"regexp"
+
+	"math"
+	"vlrggapi/internal/utils"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gofiber/fiber/v2"
-	"vlrggapi/internal/utils"
 )
-
-import "math"
 
 func pow(a float64, b int) float64 {
 	return math.Pow(a, float64(b))
@@ -83,12 +83,14 @@ func VlrLiveScore(c *fiber.Ctx) error {
 				timestamp = time.Unix(sec, 0).UTC().Format("2006-01-02 15:04:05")
 			}
 			urlPath, _ := s.Attr("href")
-			urlPath = "https://www.vlr.gg" + urlPath
+			urlPath = "https://www.vlr.gg/" + urlPath
 
-			// Fetch match page for team logos and map info
+			// Fetch match page for team logos, map info, and extra stats
 			teamLogos := []string{"", ""}
 			currentMap := "Unknown"
 			mapNumber := "Unknown"
+			extraStats := map[string]interface{}{}
+
 			matchPageReq, _ := http.NewRequest("GET", urlPath, nil)
 			for k, v := range utils.Headers {
 				matchPageReq.Header.Set(k, v)
@@ -120,6 +122,7 @@ func VlrLiveScore(c *fiber.Ctx) error {
 							}
 						}
 					}
+					// (player stats scraping removed)
 				}
 			}
 
@@ -136,7 +139,7 @@ func VlrLiveScore(c *fiber.Ctx) error {
 				team2RoundT = roundTexts[1]["t"]
 			}
 
-			result = append(result, map[string]interface{}{
+			entry := map[string]interface{}{
 				"team1":           teams[0],
 				"team2":           teams[1],
 				"flag1":           flags[0],
@@ -156,7 +159,12 @@ func VlrLiveScore(c *fiber.Ctx) error {
 				"match_series":    matchSeries,
 				"unix_timestamp":  timestamp,
 				"match_page":      urlPath,
-			})
+			}
+			// Add extra stats if available
+			for k, v := range extraStats {
+				entry[k] = v
+			}
+			result = append(result, entry)
 		}
 	})
 
